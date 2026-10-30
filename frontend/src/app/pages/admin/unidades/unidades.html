@@ -1,0 +1,92 @@
+<!-- HU-02: unidades con su estado y acciones rápidas -->
+<div class="contenedor">
+  <div class="encabezado">
+    <h1>Unidades</h1>
+    <a routerLink="/admin/unidades/nueva" class="btn btn-success">+ Nueva unidad</a>
+  </div>
+
+  <div class="resumen">
+    <div class="contador verde">
+      <div class="numero">{{ contar('Disponible') }}</div>
+      <div>Disponibles</div>
+    </div>
+    <div class="contador rojo">
+      <div class="numero">{{ contar('Ocupada') }}</div>
+      <div>Ocupadas</div>
+    </div>
+    <div class="contador azul">
+      <div class="numero">{{ contar('En limpieza') }}</div>
+      <div>En limpieza</div>
+    </div>
+    <div class="contador dorado">
+      <div class="numero">{{ contar('En mantenimiento') }}</div>
+      <div>En mantenimiento</div>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
+
+  @if (cargado && unidades.length === 0) {
+    <p>No hay unidades registradas.</p>
+  }
+
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Unidad</th>
+          <th>Capacidad</th>
+          <th>Estado</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (unidad of unidades; track unidad.id) {
+          <tr>
+            <td class="fw-bold">{{ unidad.nombre }}</td>
+            <td>{{ unidad.capacidad }} huésped(es)</td>
+            <td>
+              <span [class]="unidadService.claseEstado(unidad.estado)">{{ unidad.estado }}</span>
+            </td>
+            <td class="descripcion">{{ unidad.descripcion }}</td>
+            <td>
+              <div class="acciones">
+                <a
+                  [routerLink]="['/admin/unidades', unidad.id, 'editar']"
+                  class="btn btn-sm btn-warning"
+                  >Editar</a
+                >
+                @if (unidad.estado === 'En limpieza' || unidad.estado === 'En mantenimiento') {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success"
+                    [disabled]="cambiando"
+                    (click)="cambiarEstado(unidad, 'Disponible')"
+                  >
+                    Marcar disponible
+                  </button>
+                }
+                @if (unidad.estado === 'Disponible' || unidad.estado === 'En limpieza') {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    [disabled]="cambiando"
+                    (click)="cambiarEstado(unidad, 'En mantenimiento')"
+                  >
+                    Mantenimiento
+                  </button>
+                }
+                @if (unidad.estado === 'Ocupada') {
+                  <span class="texto-suave">Se libera con el check-out</span>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,211 @@
+<!-- Detalle de la reserva: pagos (HU-06), plazo (HU-07), check-in (HU-08),
+     check-out (HU-09), cancelación (HU-05) y WhatsApp (HU-10) -->
+<div class="contenedor">
+  <div class="encabezado">
+    <h1>
+      Reserva N° {{ id }}
+      @if (datos) {
+        <span [class]="reservaService.claseEstado(datos.reserva.estado)">{{ datos.reserva.estado }}</span>
+      }
+    </h1>
+    <a routerLink="/admin/reservas" class="btn btn-primary">Volver al listado</a>
+  </div>
+
+  @if (mensaje) {
+    <div class="alert alert-success">{{ mensaje }}</div>
+  }
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+
+  @if (datos) {
+    <!-- ========== ACCIONES ========== -->
+    <div class="tarjeta barra-acciones">
+      @if (estado === 'Confirmada') {
+        <button type="button" class="btn btn-success" [disabled]="procesando" (click)="checkin()">
+          Registrar check-in
+        </button>
+      }
+      @if (estado === 'En curso') {
+        <button type="button" class="btn btn-success" [disabled]="procesando" (click)="checkout()">
+          Registrar check-out
+        </button>
+      }
+      @if (estado === 'Pendiente de seña' || estado === 'Confirmada') {
+        <button type="button" class="btn btn-danger" [disabled]="procesando" (click)="cancelar()">
+          Cancelar reserva
+        </button>
+      }
+      <!-- HU-10: el sistema no envía el mensaje, abre el chat para que el admin lo revise -->
+      @if (enlaceWhatsapp) {
+        <a [href]="enlaceWhatsapp" target="_blank" rel="noopener" class="btn btn-whatsapp">
+          Enviar datos por WhatsApp
+        </a>
+      } @else {
+        <span class="text-danger aviso-telefono">
+          El teléfono {{ datos.pasajero?.telefono }} no tiene un formato válido para WhatsApp.
+        </span>
+      }
+    </div>
+
+    <div class="columnas">
+      <!-- ========== DATOS DE LA RESERVA ========== -->
+      <div class="tarjeta">
+        <h2>Datos de la reserva</h2>
+        <div class="dato">
+          <span class="etiqueta">Unidad</span>
+          <span class="valor">
+            {{ datos.unidad?.nombre }}
+            <span [class]="unidadService.claseEstado(datos.unidad?.estado)">{{ datos.unidad?.estado }}</span>
+          </span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Titular</span>
+          <span class="valor">{{ datos.pasajero?.apellido }}, {{ datos.pasajero?.nombre }}</span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">DNI</span>
+          <span class="valor">{{ datos.pasajero?.dni }}</span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Teléfono</span>
+          <span class="valor">{{ datos.pasajero?.telefono }}</span>
+        </div>
+        @if (datos.pasajero?.email) {
+          <div class="dato">
+            <span class="etiqueta">Email</span>
+            <span class="valor">{{ datos.pasajero?.email }}</span>
+          </div>
+        }
+        <div class="dato">
+          <span class="etiqueta">Ingreso / egreso</span>
+          <span class="valor">
+            {{ reservaService.formatoFecha(datos.reserva.fecha_ingreso) }} al
+            {{ reservaService.formatoFecha(datos.reserva.fecha_egreso) }}
+          </span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Estadía</span>
+          <span class="valor">
+            {{ reservaService.noches(datos.reserva) }} noche(s) ·
+            {{ datos.reserva.cantidad_huespedes }} huésped(es)
+          </span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Registrada</span>
+          <span class="valor">{{ reservaService.formatoFecha(datos.reserva.fecha_registro) }}</span>
+        </div>
+        @if (datos.reserva.fecha_hora_checkin) {
+          <div class="dato">
+            <span class="etiqueta">Check-in</span>
+            <span class="valor">{{ reservaService.formatoFecha(datos.reserva.fecha_hora_checkin) }}</span>
+          </div>
+        }
+        @if (datos.reserva.fecha_hora_checkout) {
+          <div class="dato">
+            <span class="etiqueta">Check-out</span>
+            <span class="valor">{{ reservaService.formatoFecha(datos.reserva.fecha_hora_checkout) }}</span>
+          </div>
+        }
+        @if (datos.reserva.motivo_cancelacion) {
+          <div class="dato">
+            <span class="etiqueta">Motivo</span>
+            <span class="valor">{{ datos.reserva.motivo_cancelacion }}</span>
+          </div>
+        }
+
+        <!-- HU-07: fecha límite de la seña y su extensión -->
+        @if (estado === 'Pendiente de seña') {
+          <div class="plazo">
+            <div class="dato">
+              <span class="etiqueta">Vence la seña</span>
+              <span class="valor vence">
+                {{ reservaService.formatoFecha(datos.reserva.fecha_limite_pago) }}
+              </span>
+            </div>
+            <form class="extender" [formGroup]="plazoForm" (ngSubmit)="extenderPlazo()">
+              <input type="datetime-local" formControlName="fechaLimite" aria-label="Nueva fecha límite" />
+              <button type="submit" class="btn btn-sm btn-warning" [disabled]="procesando">
+                Extender plazo
+              </button>
+            </form>
+          </div>
+        }
+      </div>
+
+      <!-- ========== HU-06: PAGOS Y SALDO ========== -->
+      <div class="tarjeta">
+        <h2>Pagos</h2>
+        <div class="dato">
+          <span class="etiqueta">Importe acordado</span>
+          <span class="valor">{{ reservaService.formatoMoneda(datos.reserva.importe_acordado) }}</span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Pagado</span>
+          <span class="valor">{{ reservaService.formatoMoneda(datos.pagado) }}</span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Saldo pendiente</span>
+          <span class="valor saldo" [class.deuda]="datos.saldo > 0">
+            {{ reservaService.formatoMoneda(datos.saldo) }}
+          </span>
+        </div>
+
+        @if (pagos.length > 0) {
+          <table class="tabla pagos">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Medio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pago of pagos; track pago.id; let primero = $first) {
+                <tr>
+                  <td>{{ reservaService.formatoFecha(pago.fecha) }}</td>
+                  <td>
+                    {{ reservaService.formatoMoneda(pago.monto) }}
+                    @if (primero) {
+                      <span class="texto-suave">(seña)</span>
+                    }
+                  </td>
+                  <td>{{ pago.medio_pago }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="texto-suave mt-3">Todavía no hay pagos registrados.</p>
+        }
+
+        <!-- No se cargan pagos en una cancelada ni si ya no hay saldo -->
+        @if (estado !== 'Cancelada' && datos.saldo > 0) {
+          <form class="nuevo-pago" [formGroup]="pagoForm" (ngSubmit)="registrarPago()">
+            <h3>{{ estado === 'Pendiente de seña' ? 'Registrar la seña' : 'Registrar un pago' }}</h3>
+            <div class="fila-campos">
+              <div class="campo">
+                <label for="monto">Monto ($)</label>
+                <input id="monto" type="number" min="1" formControlName="monto" />
+              </div>
+              <div class="campo">
+                <label for="fecha">Fecha</label>
+                <input id="fecha" type="date" formControlName="fecha" />
+              </div>
+              <div class="campo">
+                <label for="medio">Medio de pago</label>
+                <select id="medio" formControlName="medio_pago">
+                  <option value="Transferencia">Transferencia</option>
+                  <option value="Efectivo">Efectivo</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-warning" [disabled]="procesando">
+              {{ estado === 'Pendiente de seña' ? 'Registrar seña' : 'Registrar pago' }}
+            </button>
+          </form>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,108 @@
+/* ========== LAYOUT DE DOS COLUMNAS (igual que el admin de Programación II) ========== */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--white-smoke);
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+}
+
+/* ========== MENÚ LATERAL ========== */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: var(--midnight-blue);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--white);
+  margin-bottom: 30px;
+}
+
+.marca strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+
+.marca small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.logo {
+  width: 26px;
+  height: 26px;
+  border: 4px solid var(--gold-accent);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 8px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.sidebar a:hover {
+  background-color: var(--charcoal-grey);
+  color: var(--white);
+}
+
+.sidebar a.active {
+  background-color: var(--gold-accent);
+  color: var(--midnight-blue);
+}
+
+.sesion {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .admin-content {
+    padding: 20px 16px;
+  }
+}

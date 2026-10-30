@@ -1,0 +1,122 @@
+<!-- HU-05: listado, filtro, búsqueda y cancelación. HU-07: fecha límite de las pendientes -->
+<div class="contenedor">
+  <div class="encabezado">
+    <h1>Reservas</h1>
+    <a routerLink="/admin/disponibilidad" class="btn btn-success">+ Nueva reserva</a>
+  </div>
+
+  <div class="resumen">
+    <div class="contador dorado">
+      <div class="numero">{{ contar('Pendiente de seña') }}</div>
+      <div>Pendientes de seña</div>
+    </div>
+    <div class="contador verde">
+      <div class="numero">{{ contar('Confirmada') }}</div>
+      <div>Confirmadas</div>
+    </div>
+    <div class="contador azul">
+      <div class="numero">{{ contar('En curso') }}</div>
+      <div>En curso</div>
+    </div>
+  </div>
+
+  <form class="tarjeta filtros" [formGroup]="filtros" (ngSubmit)="cargar()">
+    <div class="campo">
+      <label for="estado">Estado</label>
+      <select id="estado" formControlName="estado">
+        <option value="">Todos</option>
+        @for (estado of estados; track estado) {
+          <option [value]="estado">{{ estado }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="busqueda">Apellido o DNI del titular</label>
+      <input id="busqueda" type="text" formControlName="busqueda" placeholder="Ej: Peralta o 35555666" />
+    </div>
+    <div class="campo botones">
+      <button type="submit" class="btn btn-warning">Buscar</button>
+      <button type="button" class="btn btn-primary" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </form>
+
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
+
+  @if (cargado && items.length === 0) {
+    <p>No hay reservas que coincidan con la búsqueda.</p>
+  }
+
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Unidad</th>
+          <th>Titular</th>
+          <th>Ingreso</th>
+          <th>Egreso</th>
+          <th>Estado</th>
+          <th>Saldo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of items; track item.reserva.id) {
+          <tr>
+            <td>{{ item.reserva.id }}</td>
+            <td class="fw-bold">{{ item.unidad ? item.unidad.nombre : '—' }}</td>
+            <td>
+              @if (item.pasajero) {
+                {{ item.pasajero.apellido }}, {{ item.pasajero.nombre }}
+                <div class="texto-suave">DNI {{ item.pasajero.dni }}</div>
+              }
+            </td>
+            <td>{{ reservaService.formatoFecha(item.reserva.fecha_ingreso) }}</td>
+            <td>{{ reservaService.formatoFecha(item.reserva.fecha_egreso) }}</td>
+            <td>
+              <span [class]="reservaService.claseEstado(item.reserva.estado)">
+                {{ item.reserva.estado }}
+              </span>
+              <!-- HU-07: la fecha límite de pago de cada reserva pendiente -->
+              @if (item.reserva.estado === 'Pendiente de seña') {
+                <div class="vence">
+                  Vence {{ reservaService.formatoFecha(item.reserva.fecha_limite_pago) }}
+                </div>
+              }
+              @if (item.reserva.motivo_cancelacion) {
+                <div class="texto-suave">{{ item.reserva.motivo_cancelacion }}</div>
+              }
+            </td>
+            <!-- HU-09: la deuda (saldo de una estadía en curso o terminada) sigue visible en rojo -->
+            <td [class.deuda]="tieneDeuda(item)">
+              @if (item.reserva.estado === 'Cancelada') {
+                —
+              } @else {
+                {{ reservaService.formatoMoneda(item.saldo) }}
+              }
+            </td>
+            <td>
+              <div class="acciones">
+                <a [routerLink]="['/admin/reserva', item.reserva.id]" class="btn btn-sm btn-primary"
+                  >Ver</a
+                >
+                @if (sePuedeCancelar(item.reserva.estado)) {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    [disabled]="cancelando"
+                    (click)="cancelar(item)"
+                  >
+                    Cancelar
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

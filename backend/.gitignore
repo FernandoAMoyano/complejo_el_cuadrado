@@ -1,0 +1,14 @@
+# Entorno virtual de Python (cada integrante crea el suyo)
+venv/
+.venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Credenciales locales: nunca se suben al repositorio
+.env
+
+# Base SQLite por defecto de Django (el proyecto usa MySQL)
+db.sqlite3

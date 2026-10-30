@@ -1,0 +1,87 @@
+<!-- HU-04: registrar una reserva -->
+<div class="contenedor angosto">
+  <div class="encabezado">
+    <h1>Nueva reserva</h1>
+    <a routerLink="/admin/disponibilidad" class="btn btn-primary">Volver a disponibilidad</a>
+  </div>
+
+  <!-- Resumen de la estadía elegida en Disponibilidad -->
+  <div class="tarjeta resumen-estadia">
+    <div>
+      <span class="texto-suave">Unidad</span>
+      <strong>{{ unidad ? unidad.nombre : '…' }}</strong>
+    </div>
+    <div>
+      <span class="texto-suave">Ingreso</span>
+      <strong>{{ reservaService.formatoFecha(ingreso) }}</strong>
+    </div>
+    <div>
+      <span class="texto-suave">Egreso</span>
+      <strong>{{ reservaService.formatoFecha(egreso) }}</strong>
+    </div>
+    <div>
+      <span class="texto-suave">Estadía</span>
+      <strong>{{ noches }} noche(s) · {{ huespedes }} huésped(es)</strong>
+    </div>
+  </div>
+
+  <form class="tarjeta" [formGroup]="form" (ngSubmit)="registrar()">
+    <h2>Titular de la reserva</h2>
+
+    <div class="campo">
+      <label for="dni">DNI (sin puntos)</label>
+      <div class="busqueda-dni">
+        <input id="dni" type="text" formControlName="dni" (input)="dniModificado()" />
+        <button type="button" class="btn btn-primary" (click)="buscarPasajero()">Buscar</button>
+      </div>
+    </div>
+
+    @if (dniBuscado && pasajeroExistente) {
+      <p class="aviso existente">
+        Pasajero ya registrado: la reserva se carga con sus datos guardados.
+      </p>
+    }
+    @if (dniBuscado && !pasajeroExistente) {
+      <p class="aviso nuevo">No hay un pasajero con ese DNI: completá sus datos.</p>
+    }
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" formControlName="nombre" />
+      </div>
+      <div class="campo">
+        <label for="apellido">Apellido</label>
+        <input id="apellido" type="text" formControlName="apellido" />
+      </div>
+    </div>
+
+    <div class="fila-campos">
+      <div class="campo">
+        <label for="telefono">Teléfono (para WhatsApp)</label>
+        <input id="telefono" type="text" formControlName="telefono" placeholder="351 555-0101" />
+      </div>
+      <div class="campo">
+        <label for="email">Email (opcional)</label>
+        <input id="email" type="email" formControlName="email" />
+      </div>
+    </div>
+
+    <h2 class="mt-3">Importe</h2>
+    <div class="campo">
+      <label for="importe">Importe acordado ($)</label>
+      <input id="importe" type="number" min="1" formControlName="importe" />
+    </div>
+
+    <p class="texto-suave">
+      La reserva queda <strong>Pendiente de seña</strong> y vence a las 48 horas si no se registra la
+      seña.
+    </p>
+
+    @if (error) {
+      <p class="text-danger">{{ error }}</p>
+    }
+
+    <button type="submit" class="btn btn-success" [disabled]="guardando">Registrar reserva</button>
+  </form>
+</div>

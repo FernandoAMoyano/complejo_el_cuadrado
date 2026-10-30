@@ -1,0 +1,37 @@
+<!-- Las pantallas solo se dibujan si hay un administrador con sesión (HU-01) -->
+@if (authService.administradorActual) {
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="marca">
+        <span class="logo"></span>
+        <div>
+          <strong>El Cuadrado</strong>
+          <small>Gestión de reservas</small>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a routerLink="/admin/reservas" routerLinkActive="active">📋 Reservas</a></li>
+          <li>
+            <a routerLink="/admin/disponibilidad" routerLinkActive="active">🔎 Disponibilidad</a>
+          </li>
+          <li><a routerLink="/admin/unidades" routerLinkActive="active">🏠 Unidades</a></li>
+        </ul>
+      </nav>
+
+      <div class="sesion">
+        <small>
+          {{ authService.administradorActual.nombre }} {{ authService.administradorActual.apellido }}
+        </small>
+        <button type="button" class="btn btn-sm btn-outline-light" (click)="cerrarSesion()">
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+}

@@ -1,0 +1,64 @@
+<!-- HU-03: consultar qué unidades están libres -->
+<div class="contenedor">
+  <div class="encabezado">
+    <h1>Disponibilidad</h1>
+  </div>
+
+  <div class="tarjeta">
+    <form class="buscador" [formGroup]="buscador" (ngSubmit)="buscar()">
+      <div class="campo">
+        <label for="ingreso">Ingreso</label>
+        <input type="date" id="ingreso" formControlName="ingreso" />
+      </div>
+      <div class="campo">
+        <label for="egreso">Egreso</label>
+        <input type="date" id="egreso" formControlName="egreso" />
+      </div>
+      <div class="campo">
+        <label for="huespedes">Huéspedes</label>
+        <select id="huespedes" formControlName="huespedes">
+          <option value="1">1 huésped</option>
+          <option value="2">2 huéspedes</option>
+          <option value="3">3 huéspedes</option>
+          <option value="4">4 huéspedes</option>
+        </select>
+      </div>
+      <div class="campo">
+        <button type="submit" class="btn btn-warning w-100">Consultar</button>
+      </div>
+    </form>
+
+    @if (error) {
+      <p class="text-danger mb-0">{{ error }}</p>
+    }
+  </div>
+
+  @if (buscado) {
+    @if (unidades.length === 0) {
+      <p>No hay unidades disponibles para esas fechas y esa cantidad de huéspedes.</p>
+    } @else {
+      <h2 class="subtitulo">{{ unidades.length }} unidad(es) libre(s)</h2>
+      <div class="grilla">
+        @for (unidad of unidades; track unidad.id) {
+          <div class="tarjeta unidad">
+            <div class="cabecera">
+              <h3>{{ unidad.nombre }}</h3>
+              <span class="texto-suave">Hasta {{ unidad.capacidad }} huésped(es)</span>
+            </div>
+            <p class="texto-suave">{{ unidad.descripcion }}</p>
+            <!-- El estado de hoy no impide reservar fechas futuras (R5) -->
+            <p class="texto-suave mb-3">
+              Hoy: <span [class]="unidadService.claseEstado(unidad.estado)">{{ unidad.estado }}</span>
+            </p>
+            <a
+              [routerLink]="['/admin/nueva-reserva', unidad.id]"
+              [queryParams]="filtros"
+              class="btn btn-success w-100"
+              >Reservar</a
+            >
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

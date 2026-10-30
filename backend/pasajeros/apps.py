@@ -1,0 +1,7 @@
+from django.apps import AppConfig
+
+
+class PasajerosConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'pasajeros'
+    verbose_name = 'Pasajeros'

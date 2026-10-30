@@ -1,0 +1,5 @@
+.descripcion {
+  max-width: 340px;
+  color: var(--charcoal-grey);
+  font-size: 13px;
+}

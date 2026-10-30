@@ -1,0 +1,37 @@
+.buscador {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0 16px;
+  align-items: end;
+}
+
+.subtitulo {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.unidad {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  border-top: 4px solid var(--gold-accent);
+}
+
+.unidad .cabecera {
+  margin-bottom: 8px;
+}
+
+.unidad h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.unidad .btn {
+  margin-top: auto;
+}

@@ -1,0 +1,87 @@
+@startuml DER
+' DER del MVP - Complejo El Cuadrado (Práctica Profesionalizante)
+' Notación: pata de gallo. PK = clave primaria, FK = clave foránea.
+' Los estados y el medio de pago son atributos con dominio de valores,
+' no entidades: ver docs/MR.md, sección "Decisiones".
+title DER - MVP Complejo El Cuadrado
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #444444
+  HeaderBackgroundColor #E8EEF7
+}
+
+entity "ADMINISTRADOR" as administrador {
+  * id_administrador : INT <<PK>>
+  --
+  * nombre : VARCHAR(50)
+  * apellido : VARCHAR(50)
+  * email : VARCHAR(100) <<UNIQUE>>
+  * clave_acceso : VARCHAR(100)
+}
+
+entity "UNIDAD" as unidad {
+  * id_unidad : INT <<PK>>
+  --
+  * nombre : VARCHAR(30) <<UNIQUE>>
+  * capacidad : INT (1 a 4)
+  * estado : VARCHAR(20)
+    descripcion : VARCHAR(500)
+}
+
+entity "PASAJERO" as pasajero {
+  * id_pasajero : INT <<PK>>
+  --
+  * nombre : VARCHAR(50)
+  * apellido : VARCHAR(50)
+  * dni : VARCHAR(8) <<UNIQUE>>
+  * telefono : VARCHAR(20)
+    email : VARCHAR(100)
+}
+
+entity "RESERVA" as reserva {
+  * id_reserva : INT <<PK>>
+  --
+  * id_unidad : INT <<FK>>
+  * id_pasajero : INT <<FK>>
+  * fecha_ingreso : DATE
+  * fecha_egreso : DATE
+  * cantidad_huespedes : INT
+  * importe_acordado : DECIMAL(10,2)
+  * estado : VARCHAR(20)
+  * fecha_registro : DATETIME
+    fecha_limite_pago : DATETIME
+    motivo_cancelacion : VARCHAR(100)
+    fecha_hora_checkin : DATETIME
+    fecha_hora_checkout : DATETIME
+}
+
+entity "PAGO" as pago {
+  * id_pago : INT <<PK>>
+  --
+  * id_reserva : INT <<FK>>
+  * monto : DECIMAL(10,2)
+  * fecha : DATE
+  * medio_pago : VARCHAR(20)
+}
+
+unidad ||--o{ reserva : "se reserva en"
+pasajero ||--o{ reserva : "es titular de"
+reserva ||--o{ pago : "registra"
+
+note bottom of administrador
+  Único perfil del sistema (HU-01).
+  No se relaciona con las demás
+  entidades en el MVP.
+end note
+
+legend right
+  * = obligatorio (NOT NULL)
+  UNIDAD.estado: Disponible | Ocupada | En limpieza | En mantenimiento
+  RESERVA.estado: Pendiente de seña | Confirmada | En curso | Finalizada | Cancelada
+  PAGO.medio_pago: Efectivo | Transferencia
+endlegend
+@enduml

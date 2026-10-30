@@ -1,0 +1,82 @@
+.encabezado h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.encabezado h1 .estado {
+  font-size: 13px;
+}
+
+.barra-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.aviso-telefono {
+  font-size: 14px;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.columnas .tarjeta {
+  margin-bottom: 0;
+}
+
+.plazo {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff8e1;
+}
+
+.vence {
+  font-weight: 700;
+  color: #856404;
+}
+
+.extender {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.extender input {
+  flex: 1;
+  min-width: 180px;
+  padding: 6px 10px;
+  border: 1px solid var(--light-grey);
+  border-radius: 6px;
+}
+
+.saldo {
+  font-weight: 700;
+}
+
+.deuda {
+  color: var(--error-red);
+}
+
+.pagos {
+  margin-top: 16px;
+  box-shadow: none;
+  border: 1px solid var(--light-grey);
+}
+
+.nuevo-pago {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--light-grey);
+}
+
+.nuevo-pago h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}

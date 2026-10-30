@@ -1,0 +1,43 @@
+<!-- HU-02: el mismo formulario sirve para el alta y la edición -->
+<div class="contenedor angosto">
+  <div class="encabezado">
+    <h1>{{ id ? 'Editar unidad' : 'Nueva unidad' }}</h1>
+  </div>
+
+  <div class="tarjeta">
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Por ejemplo: Apart 6" />
+      </div>
+
+      <div class="campo">
+        <label for="capacidad">Capacidad</label>
+        <select id="capacidad" formControlName="capacidad">
+          <option value="1">1 huésped</option>
+          <option value="2">2 huéspedes</option>
+          <option value="3">3 huéspedes</option>
+          <option value="4">4 huéspedes</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción (opcional)</label>
+        <textarea id="descripcion" formControlName="descripcion" rows="3"></textarea>
+      </div>
+
+      @if (!id) {
+        <p class="texto-suave">La unidad se registra en estado Disponible.</p>
+      }
+
+      @if (error) {
+        <p class="text-danger">{{ error }}</p>
+      }
+
+      <div class="acciones">
+        <button type="submit" class="btn btn-success" [disabled]="guardando">Guardar</button>
+        <a routerLink="/admin/unidades" class="btn btn-primary">Volver</a>
+      </div>
+    </form>
+  </div>
+</div>

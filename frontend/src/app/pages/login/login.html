@@ -1,0 +1,46 @@
+<!-- HU-01: inicio de sesión del administrador -->
+<div class="login-fondo">
+  <div class="login-tarjeta">
+    <div class="marca">
+      <span class="logo"></span>
+      <h1>Complejo El Cuadrado</h1>
+      <p>Gestión de reservas</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="enviar()">
+      <div class="linea">
+        <input id="correo" type="email" formControlName="email" placeholder=" " autocomplete="email" />
+        <span></span>
+        <label for="correo">Correo electrónico</label>
+      </div>
+      @if (Email?.errors && Email?.touched) {
+        @if (Email?.hasError('required')) {
+          <p class="text-danger">El correo es obligatorio.</p>
+        } @else if (Email?.hasError('email')) {
+          <p class="text-danger">El formato del correo no es válido.</p>
+        }
+      }
+
+      <div class="linea">
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder=" "
+          autocomplete="current-password"
+        />
+        <span></span>
+        <label for="password">Contraseña</label>
+      </div>
+      @if (Password?.hasError('required') && Password?.touched) {
+        <p class="text-danger">La contraseña es obligatoria.</p>
+      }
+
+      @if (errorLogin) {
+        <p class="text-danger">{{ errorLogin }}</p>
+      }
+
+      <button type="submit" class="login-btn" [disabled]="ingresando">Iniciar sesión</button>
+    </form>
+  </div>
+</div>

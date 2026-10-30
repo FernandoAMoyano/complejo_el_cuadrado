@@ -1,0 +1,72 @@
+# =====================================================================
+# .gitignore general del repositorio (backend + frontend + docs)
+# backend/ y frontend/ tienen además el suyo; este cubre todo desde la raíz.
+# =====================================================================
+
+# ---------- Credenciales locales: NUNCA se suben ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Python / Django (backend) ----------
+# Entorno virtual: cada integrante crea el suyo con python -m venv venv
+venv/
+.venv/
+env/
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+# Base SQLite por defecto de Django (el proyecto usa MySQL)
+db.sqlite3
+db.sqlite3-journal
+# Archivos que genera Django si se configuran (estáticos y subidas)
+staticfiles/
+media/
+# Pruebas y cobertura de Python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ---------- Node / Angular (frontend) ----------
+# Dependencias: se instalan con npm install
+node_modules/
+# Compilación
+dist/
+out-tsc/
+tmp/
+bazel-out/
+# Caché del CLI de Angular
+.angular/
+# Cobertura y capturas de pruebas
+coverage/
+__screenshots__/
+# Logs de npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------- Logs en general ----------
+*.log
+
+# ---------- Editores ----------
+# Visual Studio Code: se ignora la carpeta salvo la configuración compartida
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+# JetBrains (PyCharm, WebStorm)
+.idea/
+# Otros
+*.sublime-workspace
+*.swp
+
+# ---------- Sistema operativo ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Archivos personales ----------
+NOTAS.md
+Claude outputs/
