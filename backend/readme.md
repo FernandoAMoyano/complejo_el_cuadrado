@@ -113,11 +113,12 @@ Comandos para **Git Bash** en Windows, desde la carpeta `backend`.
 
 **Usuario de prueba:** `admin@elcuadrado.com` / `admin123`
 
-Para volver a los datos de prueba, desde `backend` y con el `venv` activo:
+Para volver a los datos de prueba (con el backend frenado), desde `backend` y con el
+`venv` activo. El detalle de qué se borra y qué queda está en el `README.md` de la raíz,
+sección "Volver la base de datos al estado inicial".
 
 ```bash
-mysql -u root -p -e "DROP DATABASE IF EXISTS complejo_el_cuadrado;"
-mysql -u root -p < database/complejo_el_cuadrado.sql
+mysql -u root -p -e "DROP DATABASE IF EXISTS complejo_el_cuadrado; SOURCE database/complejo_el_cuadrado.sql;"
 python manage.py migrate --fake-initial
 ```
 

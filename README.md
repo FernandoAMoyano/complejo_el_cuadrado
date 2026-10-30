@@ -86,6 +86,40 @@ para la demo:
   el listado, HU-07) y una Cancelada por el administrador.
 - **Pasajeros:** seis titulares con datos ficticios.
 
+## 🔄 Volver la base de datos al estado inicial
+
+Después de probar el sistema (reservas nuevas, pagos, check-in, check-out…), la base se
+puede dejar como al principio, solo con los datos iniciales. Desde la carpeta `backend`,
+en Git Bash:
+
+1. **Frenar el backend** si está corriendo (`Ctrl + C` en su terminal).
+2. **Borrar la base y volver a crearla con el script.** Pide la contraseña de MySQL una
+   sola vez:
+
+   ```bash
+   mysql -u root -p -e "DROP DATABASE IF EXISTS complejo_el_cuadrado; SOURCE database/complejo_el_cuadrado.sql;"
+   ```
+
+3. **Registrar las migraciones de Django** sobre la base nueva:
+
+   ```bash
+   source venv/Scripts/activate
+   python manage.py migrate --fake-initial
+   ```
+
+4. **Levantar el backend** (`python manage.py runserver`), recargar la página en el
+   navegador y volver a iniciar sesión.
+
+**Qué se borra:** todo lo cargado durante las pruebas (unidades, pasajeros, reservas y
+pagos) y las tablas internas de Django, incluidos los usuarios del panel `/admin/`
+creados con `createsuperuser`. No se puede deshacer.
+
+**Qué queda:** el administrador de prueba, 5 unidades, 6 pasajeros, 6 reservas y 4 pagos,
+con las fechas recalculadas desde el día en que se corre el script.
+
+**Desde MySQL Workbench:** ejecutar `DROP DATABASE IF EXISTS complejo_el_cuadrado;`,
+abrir y ejecutar `backend/database/complejo_el_cuadrado.sql`, y seguir con el paso 3.
+
 ## ⚠️ Límites conocidos
 
 - La sesión vive en memoria: al recargar la página (F5) hay que volver a iniciar sesión.
